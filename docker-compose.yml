@@ -1,0 +1,16 @@
+version: '3.8'
+
+
+services:
+  bot:
+    build: .
+    container_name: Temirlan
+    volumes:
+      - .:/app
+      - db_data:/app/db
+    command: python main.py
+    network_mode: 'host'
+
+
+volumes:
+  db_data:

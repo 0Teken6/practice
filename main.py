@@ -1,32 +1,25 @@
-from config import dp, Admins, bot
+from config import dp, Staff, bot
 from aiogram.utils import executor
 import logging
-from handlers import commands, echo, quiz, FSM_market, products_commands, admin_commands, webapp, admin_group, FSM_reg
-from Google_Sheets import sheets
+from handlers import common_commands, FSM_market, FSM_orders
 import buttons
 from db import main_db
 
 
 async def on_startup(_):
-    for id in Admins:
-        await admin_commands.set_scheduler()
+    for id in Staff:
         await bot.send_message(chat_id=id, text='Bot started', reply_markup=buttons.start_buttons)
         await main_db.sql_create()
 
 
 async def on_shutdown(_):
-    for id in Admins:
+    for id in Staff:
         await bot.send_message(chat_id=id, text='Bot is off')
 
-commands.register_commands(dp)
-FSM_reg.register_fsm_for_user(dp)
-sheets.register_google_sheets(dp)
-quiz.register_quiz(dp)
+common_commands.register_commands(dp)
 FSM_market.register_fsm_prod(dp)
-products_commands.register_products_commands(dp)
-webapp.register_webapp(dp)
-admin_group.register_admin_group(dp)
-# echo.register_echo(dp)
+FSM_orders.register_fsm_prod(dp)
+
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
